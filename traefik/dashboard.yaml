@@ -1,0 +1,17 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: dashboard
+  namespace: traefik
+spec:
+  ingressClassName: traefik
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`dashboard.${CLUSTERNAME}.${DOMAINNAME}`)
+      services:
+        - name: api@internal
+          kind: TraefikService
+  tls: {}

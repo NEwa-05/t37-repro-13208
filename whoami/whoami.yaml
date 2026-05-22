@@ -1,0 +1,186 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: whoami
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: whoami
+  namespace: whoami
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: whoami
+  template:
+    metadata:
+      labels:
+        app: whoami
+    spec:
+      containers:
+      - name: whoami
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "50m"
+          limits:
+            memory: "32Mi"
+            cpu: "50m"  
+        image: traefik/whoami
+        env:
+          - name: WHOAMI_NAME
+            value: whoami-k8s
+        imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: whoami
+  namespace: whoami
+  labels:
+    app: whoami
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    name: whoami
+  selector:
+    app: whoami
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: whoami-ingress
+  namespace: whoami
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+      - whoami.${CLUSTERNAME}.${DOMAINNAME}
+  rules:
+    - host: whoami.${CLUSTERNAME}.${DOMAINNAME}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: whoami
+                port:
+                  number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: whoami-a-ingress
+  namespace: whoami
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: whoami-a.${CLUSTERNAME}.${DOMAINNAME}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: whoami
+                port:
+                  number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: whoami-b-ingress
+  namespace: whoami
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: whoami-b.${CLUSTERNAME}.${DOMAINNAME}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: whoami
+                port:
+                  number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: whoami-c-ingress
+  namespace: whoami
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: whoami-c.${CLUSTERNAME}.${DOMAINNAME}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: whoami
+                port:
+                  number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: whoami-d-ingress
+  namespace: whoami
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: whoami-d.${CLUSTERNAME}.${DOMAINNAME}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: whoami
+                port:
+                  number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: whoami-e-ingress
+  namespace: whoami
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: whoami-e.${CLUSTERNAME}.${DOMAINNAME}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: whoami
+                port:
+                  number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: whoami-f-ingress
+  namespace: whoami
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: whoami-f.${CLUSTERNAME}.${DOMAINNAME}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: whoami
+                port:
+                  number: 80

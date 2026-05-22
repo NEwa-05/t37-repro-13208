@@ -1,0 +1,67 @@
+image:
+  tag: "v3.7.1"
+  pullPolicy: Always
+deployment:
+  replicas: 2
+ingressRoute:
+  dashboard:
+    enabled: false
+ingressClass:
+  enabled: true
+  name: traefik
+  isDefaultClass: true
+providers:
+  kubernetesCRD:
+    enabled: true
+    allowCrossNamespace: true
+    allowExternalNameServices: true
+    allowEmptyServices: true
+  kubernetesIngress:
+    enabled: false
+  kubernetesIngressNGINX:
+    enabled: true
+    ingressClass: "traefik"
+    watchIngressWithoutClass: false
+    ingressClassByName: true
+    publishService:
+      enabled: true
+    allowSnippetAnnotations: true
+logs:
+  general:
+    format: json
+    level: DEBUG
+  access:
+    enabled: true
+    format: json
+    addInternals: false
+    fields:
+      general:
+        defaultmode: keep
+      headers:
+        defaultmode: keep
+resources:
+  requests:
+    memory: 384Mi
+    cpu: 200m
+  limits:
+    memory: 384Mi
+    cpu: 200m
+tlsStore:
+  default:
+    defaultCertificate:
+      secretName: wildcard-mageekbox
+ports:
+  websecure:
+    http:
+      tls:
+        enabled: true
+additionalArguments:
+  - "--api.insecure=true"
+  - "providers.kubernetesIngressNGINX.httpentrypoint=web"
+  - "providers.kubernetesIngressNGINX.httpsentrypoint=websecure"
+  - --serverstransport.forwardingtimeouts.dialtimeout=3
+  - --serverstransport.forwardingtimeouts.responseheadertimeout=600
+  - --entrypoints.web.transport.respondingTimeouts.readTimeout=600
+  - --entrypoints.websecure.transport.respondingTimeouts.readTimeout=600
+  - --serverstransport.maxidleconnsperhost=65
+  - --serverstransport.forwardingtimeouts.idleconntimeout=65
