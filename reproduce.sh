@@ -1,7 +1,10 @@
 #!/bin/bash
 
-export startTime=$(date +%s.%N)
+function float_to_int() { 
+  echo $1 | cut -d. -f1
+}
 
+export startTime=$(float_to_int $(date +%s.%N))
 
 function rolling {
 kubectl rollout restart -n whoami deploy whoami
@@ -29,11 +32,10 @@ curl -s https://dashboard.localdemo.mageekbox.eu/api/http/services | jq '.[] | s
 }
 
 function checktrlogs {
-    checktime=$(date +%s.%N)
-    difftime=`printf "%.0f" $(( (checktime - startTime) ))`
-    echo $difftime
-    kubectl -n traefik logs -l app.kubernetes.io/instance=traefik-traefik --since=${difftime}s \
-    grep 'whoami' \
+    export checkTime=$(float_to_int $(date +%s.%N))
+    export diffTime=$(echo $(( (checkTime - startTime) )))
+    kubectl -n traefik logs -l app.kubernetes.io/instance=traefik-traefik --since=${diffTime}s \
+  | grep 'whoami' \
   | grep -oE '"url":"http://[0-9.]+:[0-9]+"' \
   | sed -E 's/.*http:\/\/([0-9.]+):[0-9]+.*/\1/' \
   | sort -u > trlog-ipused.txt
