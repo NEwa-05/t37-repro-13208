@@ -47,3 +47,9 @@ envsubst < ./traefik/dashboard.yaml | kubectl apply -f -
 ```shell
 envsubst < ./whoami/whoami.yaml | kubectl apply -f -
 ```
+
+## test the issue
+
+```shell
+./reproduce.sh
+```
