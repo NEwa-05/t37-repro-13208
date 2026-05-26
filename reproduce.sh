@@ -41,7 +41,6 @@ function checktrlogs {
   | sort -u > trlog-ipused.txt
 }
 
-
 rolling
 checksvcip
 sleep 2
